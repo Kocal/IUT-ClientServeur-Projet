@@ -1,4 +1,4 @@
 TEMPLATE = lib
 CONFIG = staticlib
-#SOURCES =
-#HEADERS =
+SOURCES = socket.c cause.c
+HEADERS = socket.h cause.h
