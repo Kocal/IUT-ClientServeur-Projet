@@ -7,5 +7,3 @@ SUBDIRS = common server client
 
 server.depends = common
 client.depends = common
-
-SOURCES += main.cpp
