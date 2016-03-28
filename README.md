@@ -4,7 +4,6 @@
 
 ## Compilation
 ```bash
-$ qmake
 $ make
 ```
 
