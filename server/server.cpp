@@ -22,6 +22,8 @@ int main() {
     int sockfd, players[MAX_PLAYERS];
 
     sockfd = creer_point_connexion(PORT);
+    
+    cout << "Hello world!" << endl;
 
     return EXIT_SUCCESS;
 }
