@@ -11,7 +11,7 @@ RM=/bin/rm
 
 DIST=build
 COMMON=common/util.cpp common/cause.cpp common/socket.cpp common/grid.cpp
-SRC_SERVER=server/server.cpp $(COMMON) 
+SRC_SERVER=server/server.cpp server/pool.cpp $(COMMON)
 SRC_CLIENT=client/client.cpp $(COMMON) 
 
 OBJ_SERVER=$(subst .cpp,.o,$(SRC_SERVER))

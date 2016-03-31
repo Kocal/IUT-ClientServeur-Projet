@@ -10,13 +10,12 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "../common/conf.h"
 #include "../common/socket.h"
 #include "../common/cause.h"
 #include "../common/util.h"
 
-// #define PORT 8080 // Port d'écoute
-#define MAX_GAME 4
-#define MAX_PLAYERS_PER_GAME 2 // Nombre maximum de clients/joueurs
+#include "pool.h"
 
 using namespace std;
 
@@ -24,7 +23,7 @@ int main(int argc, char **argv) {
     
     int port; // port du serveur
     int sockfd; // point de connexion
-    int **rooms; // salles de jeu 
+    int **pools; // salles de jeu
 
     // --- Vérification du port
 
@@ -49,10 +48,9 @@ int main(int argc, char **argv) {
     }
 
     // --- Attente des clients
-    init2DimArray(rooms, MAX_GAME, MAX_PLAYERS_PER_GAME);
-    
-    
+    init2DimArray(pools, MAX_POOLS, MAX_PLAYERS);
+
+    int* emptyPool = findPool(pools, POOL_FIND_MODE::EMPTY);
 
     return EXIT_SUCCESS;
 }
-
