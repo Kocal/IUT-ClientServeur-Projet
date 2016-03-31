@@ -13,17 +13,38 @@
 #include "../common/socket.h"
 #include "../common/cause.h"
 
-#define PORT 8080 // Port d'écoute
-#define MAX_PLAYERS 2 // Nombre maximum de clients/joueurs
+// #define PORT 8080 // Port d'écoute
+#define MAX_GAME 4
+#define MAX_PLAYERS_PER_GAME 2 // Nombre maximum de clients/joueurs
 
 using namespace std;
 
-int main() {
-    int sockfd, players[MAX_PLAYERS];
+int main(int argc, char **argv) {
+    // Port du serveur
+    int port;
+    int sockfd, players[MAX_GAME][MAX_PLAYERS_PER_GAME];
 
-    sockfd = creer_point_connexion(PORT);
+    // --- Vérification du port
+
+    if(argc < 2 || sscanf(argv[1], "%d", &port) != 1) {
+        port = 8080;
+        printf("> Usage : %s <port>\n", argv[0]);
+        printf("> Utilisation du port %d par défaut\n", port);
+    } else {
+        printf("> Utilisation du port %d\n", port);
+    }
+
+    // --- Création du point de connexion
+
+    printf("> Création d'un point de connexion... ");
+    sockfd = creer_point_connexion(port);
     
-    cout << "Hello world!" << endl;
+    if(sockfd < 0) {
+        printf("FAILURE\n");
+        return EXIT_FAILURE;
+    } else {
+        printf("OK\n");
+    }
 
     return EXIT_SUCCESS;
 }
