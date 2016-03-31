@@ -12,6 +12,7 @@
 
 #include "../common/socket.h"
 #include "../common/cause.h"
+#include "../common/util.h"
 
 // #define PORT 8080 // Port d'écoute
 #define MAX_GAME 4
@@ -20,9 +21,10 @@
 using namespace std;
 
 int main(int argc, char **argv) {
-    // Port du serveur
-    int port;
-    int sockfd, players[MAX_GAME][MAX_PLAYERS_PER_GAME];
+    
+    int port; // port du serveur
+    int sockfd; // point de connexion
+    int **rooms; // salles de jeu 
 
     // --- Vérification du port
 
@@ -46,5 +48,11 @@ int main(int argc, char **argv) {
         printf("OK\n");
     }
 
+    // --- Attente des clients
+    init2DimArray(rooms, MAX_GAME, MAX_PLAYERS_PER_GAME);
+    
+    
+
     return EXIT_SUCCESS;
 }
+

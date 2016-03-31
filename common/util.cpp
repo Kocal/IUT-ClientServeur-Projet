@@ -2,7 +2,7 @@
 #include "util.h"
 
 /**
- * Initialise un tableau à deux-dimensions avec une valeur de 0
+ * Initialise un tableau à deux-dimensions avec une valeur de -1
  */
 void init2DimArray(int **array, int key1, int key2) {
     int i, j;
@@ -13,7 +13,7 @@ void init2DimArray(int **array, int key1, int key2) {
         array[i] = new int[key2];
         
         for(j = 0; j < key2; j++) {
-            array[i][j] = 0;
+            array[i][j] = -1;
         } 
     }
 }
