@@ -48,9 +48,9 @@ int main(int argc, char **argv) {
     }
 
     // --- Attente des clients
-    init2DimArray(pools, MAX_POOLS, MAX_PLAYERS);
+    //initPools(pools, MAX_POOLS, MAX_PLAYERS);
 
-    int* emptyPool = findPool(pools, POOL_FIND_MODE::EMPTY);
+    //int* emptyPool = findPool(pools, POOL_FIND_MODE::EMPTY);
 
     return EXIT_SUCCESS;
 }

@@ -7,6 +7,8 @@ struct POOL_FIND_MODE {
     const static int FULL = 2;
 };
 
-int* findPool(int **pools, int mode);
+class Pool {
+
+};
 
 #endif
