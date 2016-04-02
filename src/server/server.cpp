@@ -1,33 +1,21 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <cstdio>
-#include <errno.h>
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/select.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
-#include "../common/conf.h"
 #include "../common/socket.h"
-#include "../common/cause.h"
-#include "../common/util.h"
 
-#include "pool.h"
+#include "Pools.h"
 
 using namespace std;
 
 int main(int argc, char **argv) {
-    
+
     int port; // port du serveur
     int sockfd; // point de connexion
-    int **pools; // salles de jeu
+    // salles de jeu
 
     // --- Vérification du port
 
-    if(argc < 2 || sscanf(argv[1], "%d", &port) != 1) {
+    if (argc < 2 || sscanf(argv[1], "%d", &port) != 1) {
         port = 8080;
         printf("> Usage : %s <port>\n", argv[0]);
         printf("> Utilisation du port %d par défaut\n", port);
@@ -37,17 +25,22 @@ int main(int argc, char **argv) {
 
     // --- Création du point de connexion
 
-    printf("> Création d'un point de connexion... ");
+    cout << "> Création d'un point de connexion... ";
     sockfd = creer_point_connexion(port);
-    
-    if(sockfd < 0) {
-        printf("FAILURE\n");
+
+    if (sockfd < 0) {
+        cout << "FAILURE" << endl;
         return EXIT_FAILURE;
     } else {
-        printf("OK\n");
+        cout << "OK\n";
     }
 
     // --- Attente des clients
+    cout << "> Création des pools... ";
+
+    Pools *pools = new Pools();
+
+    printf("%d pools de %d joueurs ont étés créés", pools->getNbPools(), pools->getNbPlayers());
     //initPools(pools, MAX_POOLS, MAX_PLAYERS);
 
     //int* emptyPool = findPool(pools, POOL_FIND_MODE::EMPTY);
