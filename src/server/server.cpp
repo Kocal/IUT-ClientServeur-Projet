@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 
     int port; // port du serveur
     int sockfd; // point de connexion
-    // salles de jeu
+    Pools *pools;
 
     // --- Vérification du port
 
@@ -32,18 +32,25 @@ int main(int argc, char **argv) {
         cout << "FAILURE" << endl;
         return EXIT_FAILURE;
     } else {
-        cout << "OK\n";
+        cout << "OK" << endl;
     }
 
-    // --- Attente des clients
+    // --- Création des pools
+
     cout << "> Création des pools... ";
 
-    Pools *pools = new Pools();
+    pools = new Pools();
+    printf("%d pools de %d joueurs ont étés créés\n", pools->getNbPools(), pools->getNbPlayers());
 
-    printf("%d pools de %d joueurs ont étés créés", pools->getNbPools(), pools->getNbPlayers());
-    //initPools(pools, MAX_POOLS, MAX_PLAYERS);
+    cout << "> Recherche d'une salle vide... ";
+    Pool *pool = pools->getEmptyPool();
 
-    //int* emptyPool = findPool(pools, POOL_FIND_MODE::EMPTY);
+    if (pools == nullptr) {
+        cout << "FAILURE" << endl;
+        return EXIT_FAILURE; // changer ça
+    } else {
+        cout << "OK" << endl;
+    }
 
     return EXIT_SUCCESS;
 }

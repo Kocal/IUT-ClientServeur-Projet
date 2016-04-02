@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Pools.h"
 
 Pools::Pools(int nbPools, int nbPlayers) : nbPools(nbPools), nbPlayers(nbPlayers) {
@@ -12,6 +13,30 @@ void Pools::initPools() {
     }
 }
 
+Pool *Pools::getEmptyPool() {
+    Pool *pool = nullptr;
 
+    for (std::vector<Pool *>::iterator it = this->pools.begin(); it != this->pools.end(); it++) {
+        if ((*it)->isEmpty()) {
+            pool = *it;
+            break;
+        }
+    }
+
+    return pool;
+}
+
+Pool *Pools::getNonFullPool() {
+    Pool *pool = nullptr;
+
+    for (std::vector<Pool *>::iterator it = this->pools.begin(); it != this->pools.end(); it++) {
+        if (!(*it)->isFull()) {
+            pool = *it;
+            break;
+        }
+    }
+
+    return pool;
+}
 
 

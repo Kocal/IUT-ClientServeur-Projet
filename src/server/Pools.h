@@ -17,6 +17,10 @@ class Pools {
 public:
 
     Pools(int nbPools = MAX_POOLS, int nbPlayers = MAX_PLAYERS);
+    
+    Pool *getEmptyPool();
+
+    Pool *getNonFullPool();
 
     int getNbPools() const {
         return nbPools;

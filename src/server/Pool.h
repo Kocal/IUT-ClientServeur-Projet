@@ -15,6 +15,10 @@ public:
 
     Pool(int nbPlayers = MAX_PLAYERS);
 
+    bool isEmpty();
+
+    bool isFull();
+
 private:
 
     int nbPlayers;
