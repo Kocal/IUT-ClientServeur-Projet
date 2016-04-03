@@ -1,5 +1,7 @@
 #include <cstdlib>
 #include <iostream>
+#include <arpa/inet.h>
+#include <iwlib.h>
 
 #include "../common/socket.h"
 
@@ -11,7 +13,7 @@ int main(int argc, char **argv) {
 
     int port; // port du serveur
     int sockfd; // point de connexion
-    Pools *pools;
+    Pools *pools; // les salles de jeu
 
     // --- Vérification du port
 
@@ -50,6 +52,26 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE; // changer ça
     } else {
         cout << "OK" << endl;
+    }
+
+    // --- Attente des joueurs
+    cout << "> Attente d'un client... ";
+
+    while(true) {
+        int client;
+        struct sockaddr_in addr;
+        unsigned int addr_size = sizeof(struct sockaddr);
+
+        User *user = new User();
+
+        if((client = accept(sockfd, (sockaddr *) &addr, (socklen_t *) &addr_size)) != 0) {
+            perror("FAILURE");
+            continue;
+        }
+
+        user->setSocket(client);
+
+        cout << "Addresse : " << inet_ntoa(addr.sin_addr);
     }
 
     return EXIT_SUCCESS;

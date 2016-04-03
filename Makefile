@@ -163,6 +163,36 @@ src/client/client.cpp.s:
 	$(MAKE) -f CMakeFiles/client.bin.dir/build.make CMakeFiles/client.bin.dir/src/client/client.cpp.s
 .PHONY : src/client/client.cpp.s
 
+src/common/User.o: src/common/User.cpp.o
+
+.PHONY : src/common/User.o
+
+# target to build an object file
+src/common/User.cpp.o:
+	$(MAKE) -f CMakeFiles/client.bin.dir/build.make CMakeFiles/client.bin.dir/src/common/User.cpp.o
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/User.cpp.o
+.PHONY : src/common/User.cpp.o
+
+src/common/User.i: src/common/User.cpp.i
+
+.PHONY : src/common/User.i
+
+# target to preprocess a source file
+src/common/User.cpp.i:
+	$(MAKE) -f CMakeFiles/client.bin.dir/build.make CMakeFiles/client.bin.dir/src/common/User.cpp.i
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/User.cpp.i
+.PHONY : src/common/User.cpp.i
+
+src/common/User.s: src/common/User.cpp.s
+
+.PHONY : src/common/User.s
+
+# target to generate assembly for a file
+src/common/User.cpp.s:
+	$(MAKE) -f CMakeFiles/client.bin.dir/build.make CMakeFiles/client.bin.dir/src/common/User.cpp.s
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/User.cpp.s
+.PHONY : src/common/User.cpp.s
+
 src/common/cause.o: src/common/cause.cpp.o
 
 .PHONY : src/common/cause.o
@@ -253,32 +283,59 @@ src/common/util.cpp.s:
 	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/util.cpp.s
 .PHONY : src/common/util.cpp.s
 
-src/server/pool.o: src/server/pool.cpp.o
+src/server/Pool.o: src/server/Pool.cpp.o
 
-.PHONY : src/server/pool.o
+.PHONY : src/server/Pool.o
 
 # target to build an object file
-src/server/pool.cpp.o:
-	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/pool.cpp.o
-.PHONY : src/server/pool.cpp.o
+src/server/Pool.cpp.o:
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/Pool.cpp.o
+.PHONY : src/server/Pool.cpp.o
 
-src/server/pool.i: src/server/pool.cpp.i
+src/server/Pool.i: src/server/Pool.cpp.i
 
-.PHONY : src/server/pool.i
+.PHONY : src/server/Pool.i
 
 # target to preprocess a source file
-src/server/pool.cpp.i:
-	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/pool.cpp.i
-.PHONY : src/server/pool.cpp.i
+src/server/Pool.cpp.i:
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/Pool.cpp.i
+.PHONY : src/server/Pool.cpp.i
 
-src/server/pool.s: src/server/pool.cpp.s
+src/server/Pool.s: src/server/Pool.cpp.s
 
-.PHONY : src/server/pool.s
+.PHONY : src/server/Pool.s
 
 # target to generate assembly for a file
-src/server/pool.cpp.s:
-	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/pool.cpp.s
-.PHONY : src/server/pool.cpp.s
+src/server/Pool.cpp.s:
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/Pool.cpp.s
+.PHONY : src/server/Pool.cpp.s
+
+src/server/Pools.o: src/server/Pools.cpp.o
+
+.PHONY : src/server/Pools.o
+
+# target to build an object file
+src/server/Pools.cpp.o:
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/Pools.cpp.o
+.PHONY : src/server/Pools.cpp.o
+
+src/server/Pools.i: src/server/Pools.cpp.i
+
+.PHONY : src/server/Pools.i
+
+# target to preprocess a source file
+src/server/Pools.cpp.i:
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/Pools.cpp.i
+.PHONY : src/server/Pools.cpp.i
+
+src/server/Pools.s: src/server/Pools.cpp.s
+
+.PHONY : src/server/Pools.s
+
+# target to generate assembly for a file
+src/server/Pools.cpp.s:
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/server/Pools.cpp.s
+.PHONY : src/server/Pools.cpp.s
 
 src/server/server.o: src/server/server.cpp.o
 
@@ -320,6 +377,9 @@ help:
 	@echo "... src/client/client.o"
 	@echo "... src/client/client.i"
 	@echo "... src/client/client.s"
+	@echo "... src/common/User.o"
+	@echo "... src/common/User.i"
+	@echo "... src/common/User.s"
 	@echo "... src/common/cause.o"
 	@echo "... src/common/cause.i"
 	@echo "... src/common/cause.s"
@@ -329,9 +389,12 @@ help:
 	@echo "... src/common/util.o"
 	@echo "... src/common/util.i"
 	@echo "... src/common/util.s"
-	@echo "... src/server/pool.o"
-	@echo "... src/server/pool.i"
-	@echo "... src/server/pool.s"
+	@echo "... src/server/Pool.o"
+	@echo "... src/server/Pool.i"
+	@echo "... src/server/Pool.s"
+	@echo "... src/server/Pools.o"
+	@echo "... src/server/Pools.i"
+	@echo "... src/server/Pools.s"
 	@echo "... src/server/server.o"
 	@echo "... src/server/server.i"
 	@echo "... src/server/server.s"
