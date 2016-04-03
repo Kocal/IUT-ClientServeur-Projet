@@ -15,6 +15,8 @@ public:
 
     Pool(int nbPlayers = MAX_PLAYERS);
 
+    int getCurrentNbPlayers();
+
     bool isEmpty();
 
     bool isFull();

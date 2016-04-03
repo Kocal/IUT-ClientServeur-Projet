@@ -9,26 +9,22 @@ Pool::Pool(int nbPlayers) : nbPlayers(nbPlayers) {
     this->users = std::vector<User *>(nbPlayers);
 }
 
-bool Pool::isEmpty() {
+int Pool::getCurrentNbPlayers() {
+    int _players = 0;
 
     for (std::vector<User *>::iterator it = this->users.begin(); it != this->users.end(); it++) {
-        if (*it != nullptr) { // On a au moins un joueur dans la pool
-            return false;
+        if (*it != nullptr) {
+            _players++;
         }
     }
 
-    return true;
+    return _players;
+}
+
+bool Pool::isEmpty() {
+    return this->getCurrentNbPlayers() == 0;
 }
 
 bool Pool::isFull() {
-    bool isFull = true;
-
-    for (std::vector<User *>::iterator it = this->users.begin(); it != this->users.end(); it++) {
-        if (*it == nullptr) { // On a au moins un joueur dans la pool
-            isFull = false;
-            break;
-        }
-    }
-
-    return isFull;
+    return this->getCurrentNbPlayers() == this->nbPlayers;
 }
