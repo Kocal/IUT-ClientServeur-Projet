@@ -10,7 +10,7 @@ RM=/bin/rm
 ####################
 
 DIST=build
-COMMON=common/cause.cpp common/socket.cpp
+COMMON=common/util.cpp common/cause.cpp common/socket.cpp common/grid.cpp
 SRC_SERVER=server/server.cpp $(COMMON) 
 SRC_CLIENT=client/client.cpp $(COMMON) 
 
