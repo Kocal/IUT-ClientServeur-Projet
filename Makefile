@@ -223,6 +223,36 @@ src/common/cause.cpp.s:
 	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/cause.cpp.s
 .PHONY : src/common/cause.cpp.s
 
+src/common/jsoncpp.o: src/common/jsoncpp.cpp.o
+
+.PHONY : src/common/jsoncpp.o
+
+# target to build an object file
+src/common/jsoncpp.cpp.o:
+	$(MAKE) -f CMakeFiles/client.bin.dir/build.make CMakeFiles/client.bin.dir/src/common/jsoncpp.cpp.o
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/jsoncpp.cpp.o
+.PHONY : src/common/jsoncpp.cpp.o
+
+src/common/jsoncpp.i: src/common/jsoncpp.cpp.i
+
+.PHONY : src/common/jsoncpp.i
+
+# target to preprocess a source file
+src/common/jsoncpp.cpp.i:
+	$(MAKE) -f CMakeFiles/client.bin.dir/build.make CMakeFiles/client.bin.dir/src/common/jsoncpp.cpp.i
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/jsoncpp.cpp.i
+.PHONY : src/common/jsoncpp.cpp.i
+
+src/common/jsoncpp.s: src/common/jsoncpp.cpp.s
+
+.PHONY : src/common/jsoncpp.s
+
+# target to generate assembly for a file
+src/common/jsoncpp.cpp.s:
+	$(MAKE) -f CMakeFiles/client.bin.dir/build.make CMakeFiles/client.bin.dir/src/common/jsoncpp.cpp.s
+	$(MAKE) -f CMakeFiles/server.bin.dir/build.make CMakeFiles/server.bin.dir/src/common/jsoncpp.cpp.s
+.PHONY : src/common/jsoncpp.cpp.s
+
 src/common/socket.o: src/common/socket.cpp.o
 
 .PHONY : src/common/socket.o
@@ -383,6 +413,9 @@ help:
 	@echo "... src/common/cause.o"
 	@echo "... src/common/cause.i"
 	@echo "... src/common/cause.s"
+	@echo "... src/common/jsoncpp.o"
+	@echo "... src/common/jsoncpp.i"
+	@echo "... src/common/jsoncpp.s"
 	@echo "... src/common/socket.o"
 	@echo "... src/common/socket.i"
 	@echo "... src/common/socket.s"

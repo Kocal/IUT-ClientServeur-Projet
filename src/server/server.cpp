@@ -2,10 +2,10 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include <iwlib.h>
-#include "../common/protocol.h"
 #include "../common/socket.h"
-
+#include "../common/json/json.h"
 #include "Pools.h"
+#include "../common/protocol.h"
 
 using namespace std;
 
@@ -81,11 +81,16 @@ int main(int argc, char **argv) {
                 perror("> fork()");
                 exit(EXIT_FAILURE);
 
-            case 0: // child
+            case 0: // child {
 
                 User *user = new User();
                 user->setSocket(client);
                 user->setAddress(addr);
+
+                std::string responseBuffer;
+                Json::Value response;
+                Json::Reader reader;
+                Json::FastWriter fastWriter;
 
                 printf("> Nouvelle connexion sur %s:%d\n", user->getIpAddress(), user->getPort());
 
@@ -93,23 +98,25 @@ int main(int argc, char **argv) {
 
                 // L'adresse IP n'est pas attendue par un autre joueur
                 if (waitedIpsIt == waitedIps.end()) {
-                    user->send(PROTOCOL_NEW_GAME); usleep(1);
-                    user->send("Une nouvelle partie vient de commencer"); usleep(1);
+                    printf("> Le joueur %p (%s) vient de rejoindre une pool vide (%p)\n", user, user->getIpAddress(),
+                           pools->getEmptyPool());
+
+                    response["method"] = PROTOCOL_METHOD_NEW_GAME;
                 } else {
+                    printf("> Le joueur %p (%s) est attendu pour jouer dans une pool (%p)", user, user->getIpAddress(),
+                           waitedIpsIt->second);
+
+                    response["method"] = PROTOCOL_METHOD_JOIN_POOL;
                     waitedIps.erase(waitedIpsIt);
-                    cout << "> Le client " << user << " (" << user->getIpAddress() << ") est attendu pour jouer " << endl;
-                    user->send(PROTOCOL_JOIN_POOL);
-                    user->send("Vous êtes attendu pour jouer");
                 }
 
-                while(true) {
-                    cout << "Réponse : " << user->recv(100) << endl;
+                user->send(fastWriter.write(response));
 
-//                    user->send("Ouais");
+                while (true) {
+                    cout << "Réponse : " << user->recv(100) << endl;
                     break;
                 }
         }
-
     }
 
     return EXIT_SUCCESS;

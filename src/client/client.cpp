@@ -3,8 +3,7 @@
 #include "../common/conf.h"
 #include "../common/protocol.h"
 #include "../common/socket.h"
-#include <memory.h>
-
+#include "../common/json/json.h"
 #include <iwlib.h>
 
 using namespace std;
@@ -15,8 +14,7 @@ int main(int argc, char **argv) {
     int port;
     int socket;
 
-    char response[BUFFER_LENGTH];
-    int responseCode;
+    char responseBuffer[BUFFER_LENGTH];
 
     // --- Vérification de l'adresse du serveur et port
 
@@ -45,37 +43,61 @@ int main(int argc, char **argv) {
     }
 
     for (; ;) {
-        bzero(&response, BUFFER_LENGTH);
-        read(socket, &response, BUFFER_LENGTH);
+        int method;
 
-        cout << "Réponse : " << response << endl;
+        Json::Value response;
+        Json::Value request;
+        Json::Reader reader;
+        Json::FastWriter fastWriter;
 
-        if(strcmp(response, PROTOCOL_NEW_GAME) == 0) {
-            cout << "> Création d'une nouvelle partie" << endl;
+        bzero(&responseBuffer, BUFFER_LENGTH);
+        read(socket, &responseBuffer, BUFFER_LENGTH);
 
-            int paramPionsCount = 3;
-            int paramSideSize = 4;
-            string paramIpToWait;
-
-            do {
-                cout << "> Nombre de pions à aligner pour gagner : ";
-                cin >> paramPionsCount;
-
-                cout << "> Taille des côtés du plateau (>=" << paramPionsCount << ") : ";
-                cin >> paramSideSize;
-
-                cout << "> Adresse IP du joueur à attendre : ";
-                cin >> paramIpToWait;
-            } while(paramPionsCount < 3 || paramSideSize < paramPionsCount);
-
-
-        } else if(strcmp(response, PROTOCOL_JOIN_POOL) == 0) {
-            cout << "Je rejoins une partie" << endl;
-        } else {
-            cout << "Commande inconnue" << endl;
+        if (!reader.parse(responseBuffer, response)) {
+            cerr << "> Impossible de parser la réponse du serveur" << endl;
+            continue;
         }
-        break;
-    }
 
+        cout << "Réponse : " << responseBuffer << endl;
+        cout << "Réponse (JSON) : " << response << endl;
+
+        method = response.get("method", PROTOCOL_NO_METHOD).asInt();
+
+        switch (method) {
+            case PROTOCOL_METHOD_NEW_GAME: {
+                cout << "> Création d'une nouvelle partie" << endl;
+
+                int paramPionsCount = 3;
+                int paramSideSize = 4;
+                string paramIpToWait;
+
+                do {
+                    cout << "> Nombre de pions à aligner pour gagner : ";
+                    cin >> paramPionsCount;
+
+                    cout << "> Taille des côtés du plateau (>=" << paramPionsCount << ") : ";
+                    cin >> paramSideSize;
+
+                    cout << "> Adresse IP du joueur à attendre : ";
+                    cin >> paramIpToWait;
+                } while (paramPionsCount < 3 || paramSideSize < paramPionsCount);
+
+                request["method"] = PROTOCOL_METHOD_NEW_GAME;
+                request["params"]["pionsCount"] = paramPionsCount;
+                request["params"]["sideSize"] = paramSideSize;
+                request["params"]["ipToWait"] = paramIpToWait;
+
+                write(socket, fastWriter.write(request).c_str(), BUFFER_LENGTH);
+            }
+
+            case PROTOCOL_METHOD_JOIN_POOL: {
+                cout << "Je rejoins une partie" << endl;
+            }
+            default:
+                cout << "Commande inconnue" << endl;
+        }
+
+
+    }
     return EXIT_SUCCESS;
 }

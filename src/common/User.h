@@ -16,7 +16,7 @@ public:
 
 
     std::string recv(unsigned int bytes);
-    void send(const char *string);
+    void send(std::string string);
 
     int getSocket() const {
         return socket;

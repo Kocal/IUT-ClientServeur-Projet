@@ -21,8 +21,8 @@ std::string User::recv(unsigned int bytes) {
     return output;
 }
 
-void User::send(const char *str) {
-    if(write(this->socket, str, strlen(str)) == -1) {
+void User::send(std::string str) {
+    if(write(this->socket, str.c_str(), strlen(str.c_str())) == -1) {
         std::cerr << "Impossible d'écrire des données dans la socket" << std::endl;
     }
 }
