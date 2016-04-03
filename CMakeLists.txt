@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
-set(COMMON_FILES src/common/cause.cpp src/common/socket.cpp src/common/util.cpp src/common/User.cpp src/common/User.h)
+set(COMMON_FILES src/common/cause.cpp src/common/socket.cpp src/common/util.cpp src/common/User.cpp src/common/User.h src/common/protocol.h)
 set(SOURCE_FILES_SERVER src/server/Pools.cpp src/server/server.cpp src/server/Pool.cpp src/server/Pool.h)
 set(SOURCE_FILES_CLIENT src/client/client.cpp)
 

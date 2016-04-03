@@ -2,7 +2,7 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include <iwlib.h>
-
+#include "../common/protocol.h"
 #include "../common/socket.h"
 
 #include "Pools.h"
@@ -14,6 +14,11 @@ int main(int argc, char **argv) {
     int port; // port du serveur
     int sockfd; // point de connexion
     Pools *pools; // les salles de jeu
+
+    pid_t pid;
+
+    std::map<std::string, Pool *> waitedIps; // adresses IP attendues
+    std::map<std::string, Pool *>::iterator waitedIpsIt;
 
     // --- Vérification du port
 
@@ -44,34 +49,67 @@ int main(int argc, char **argv) {
     pools = new Pools();
     printf("%d pools de %d joueurs ont étés créés\n", pools->getNbPools(), pools->getNbPlayers());
 
-    cout << "> Recherche d'une salle vide... ";
-    Pool *pool = pools->getEmptyPool();
-
-    if (pools == nullptr) {
-        cout << "FAILURE" << endl;
-        return EXIT_FAILURE; // changer ça
-    } else {
-        cout << "OK" << endl;
-    }
+//    cout << "> Recherche d'une salle vide... ";
+//    Pool *pool = pools->getEmptyPool();
+//
+//    if (pools == nullptr) {
+//        cout << "FAILURE" << endl;
+//        return EXIT_FAILURE; // changer ça
+//    } else {
+//        cout << "OK" << endl;
+//    }
 
     // --- Attente des joueurs
-    cout << "> Attente d'un client... ";
 
-    while(true) {
+    cout << "> Attente d'un client... " << endl;
+
+    while (true) {
         int client;
         struct sockaddr_in addr;
         unsigned int addr_size = sizeof(struct sockaddr);
 
-        User *user = new User();
 
-        if((client = accept(sockfd, (sockaddr *) &addr, (socklen_t *) &addr_size)) != 0) {
+        if ((client = accept(sockfd, (sockaddr *) &addr, (socklen_t *) &addr_size)) == -1) {
             perror("FAILURE");
             continue;
         }
 
-        user->setSocket(client);
+        pid = fork();
 
-        cout << "Addresse : " << inet_ntoa(addr.sin_addr);
+        switch (pid) {
+            case -1: // error
+                perror("> fork()");
+                exit(EXIT_FAILURE);
+
+            case 0: // child
+
+                User *user = new User();
+                user->setSocket(client);
+                user->setAddress(addr);
+
+                printf("> Nouvelle connexion sur %s:%d\n", user->getIpAddress(), user->getPort());
+
+                waitedIpsIt = waitedIps.find(user->getIpAddress());
+
+                // L'adresse IP n'est pas attendue par un autre joueur
+                if (waitedIpsIt == waitedIps.end()) {
+                    user->send(PROTOCOL_NEW_GAME); usleep(1);
+                    user->send("Une nouvelle partie vient de commencer"); usleep(1);
+                } else {
+                    waitedIps.erase(waitedIpsIt);
+                    cout << "> Le client " << user << " (" << user->getIpAddress() << ") est attendu pour jouer " << endl;
+                    user->send(PROTOCOL_JOIN_POOL);
+                    user->send("Vous êtes attendu pour jouer");
+                }
+
+                while(true) {
+                    cout << "Réponse : " << user->recv(100) << endl;
+
+//                    user->send("Ouais");
+                    break;
+                }
+        }
+
     }
 
     return EXIT_SUCCESS;

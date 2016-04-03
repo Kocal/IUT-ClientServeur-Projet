@@ -5,15 +5,44 @@
 #ifndef IUT_CLIENTSERVEUR_MINIPROJET_USER_H
 #define IUT_CLIENTSERVEUR_MINIPROJET_USER_H
 
+#include <string>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 class User {
 
-    public:
-        User(int socket = 0);
+public:
+    User(int socket = 0);
 
-    private:
+
+    std::string recv(unsigned int bytes);
+    void send(const char *string);
+
+    int getSocket() const {
+        return socket;
+    }
+
+    void setSocket(int socket) {
+        this->socket = socket;
+    }
+
+    const sockaddr_in &getAddr() const {
+        return addr;
+    }
+
+    void setAddress(sockaddr_in in);
+
+    char *getIpAddress() {
+        return inet_ntoa(this->addr.sin_addr);
+    }
+
+    int getPort() {
+        return this->addr.sin_port;
+    }
+
+private:
     int socket;
-
+    sockaddr_in addr;
 };
 
 
