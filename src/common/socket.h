@@ -9,7 +9,7 @@
 extern volatile sig_atomic_t stop;
 
 extern int creer_point_connexion(int port);
-extern int ouvrir_canal_communication(char *serveur, int port);
+extern int ouvrir_canal_communication(const char *serveur, int port);
 
 // renvoie le nom de la machine et le port utilise par le client connecte a la socket "communication"
 extern void adresse_client(char *client, int client_size, int *client_port, int communication);

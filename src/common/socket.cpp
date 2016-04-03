@@ -19,7 +19,7 @@
 volatile sig_atomic_t stop= 0;
 
 // SERVEUR
-// creer un point de connexion sur le port specifie 
+// creer un point de connexion sur le port specifie
 int creer_point_connexion(int port)
 {
 	char localhost[128 +1];
@@ -84,8 +84,8 @@ int creer_point_connexion(int port)
 }
 
 
-// 
-int ouvrir_canal_communication(char *serveur, int port)
+//
+int ouvrir_canal_communication(const char *serveur, int port)
 {
 	struct sockaddr_in adresse;
 	struct hostent *host;
@@ -115,7 +115,7 @@ int ouvrir_canal_communication(char *serveur, int port)
 	adresse.sin_family= host->h_addrtype;
 	adresse.sin_port= htons(port);
 
-	code= connect(communication, (struct sockaddr *) &adresse, sizeof(adresse));
+	code= connect(communication, (const struct sockaddr *) (struct sockaddr *) &adresse, sizeof(adresse));
 	if(code < 0)
 	{
 		perror("canal_communication connect");
@@ -134,8 +134,8 @@ void adresse_locale(char *local, int local_size, int *local_port, int com)
 	struct sockaddr_in *addr;
 	unsigned int len;
 	int code;
-	
-	
+
+
 	len= sizeof(struct sockaddr);
 	memset(&hostaddr, 0, sizeof(struct sockaddr));
 	code= getsockname(com, &hostaddr, &len);
@@ -144,7 +144,7 @@ void adresse_locale(char *local, int local_size, int *local_port, int com)
 		perror("getsockname");
 		exit(1);
 	}
-	
+
 	if(hostaddr.sa_family!=AF_INET)
 	{
 		printf(" -- adresse non reconnue\n");
@@ -169,7 +169,7 @@ void adresse_locale(char *local, int local_size, int *local_port, int com)
 		*local_port= ntohs(addr->sin_port);
 }
 
-// recupere l'adresse de la machine distante (de l'autre cote de la socket) 
+// recupere l'adresse de la machine distante (de l'autre cote de la socket)
 void adresse_client(char *client, int client_size, int *client_port, int com)
 {
 	struct sockaddr peeraddr;
@@ -185,7 +185,7 @@ void adresse_client(char *client, int client_size, int *client_port, int com)
 		perror("adresse_client getpeername");
 		exit(1);
 	}
-	
+
 	if(peeraddr.sa_family!=AF_INET)
 	{
 		printf(" -- adresse non reconnue\n");
