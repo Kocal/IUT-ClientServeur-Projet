@@ -179,9 +179,10 @@ void *handleUser(void *) {
 
     std::vector<std::string>::iterator position = std::find(waitedIps.begin(), waitedIps.end(), currentUserIpAddress);
 
-    // Pas attendu
+    // L'utilisateur n'est pas attendu
     if(position == waitedIps.end()) {
         currentPool = pools->getEmptyPool();
+        request["method"] = PROTOCOL_METHOD_NEW_GAME;
 
         printf("> L'utilisateur %p a rejoint la pool vide %p\n", currentUser, currentPool);
 
@@ -190,11 +191,15 @@ void *handleUser(void *) {
 
     } else { // attendu
         currentPool = pools->findByWaitedIp(currentUserIpAddress);
+        request["method"] = PROTOCOL_METHOD_JOIN_POOL;
 
         printf("> L'utilisateur %p est attendu dans la pool %p\n", currentUser, currentPool);
 
+        // On n'attend plus l'user
         waitedIps.erase(position);
     }
+
+    currentUser->send(writer.write(request));
 
     return nullptr;
 }
