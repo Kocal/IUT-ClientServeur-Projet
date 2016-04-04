@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
                 string paramIpToWait;
 
                 do {
-                    cout << "> Nombre de pions à aligner pour gagner : ";
+                    cout << "> Nombre de pions à aligner pour gagner (>=3): ";
                     cin >> paramPionsCount;
 
                     cout << "> Taille des côtés du plateau (>=" << paramPionsCount << ") : ";
@@ -88,11 +88,14 @@ int main(int argc, char **argv) {
                 request["params"]["ipToWait"] = paramIpToWait;
 
                 write(socket, fastWriter.write(request).c_str(), BUFFER_LENGTH);
+
+                break;
             }
 
             case PROTOCOL_METHOD_JOIN_POOL: {
                 cout << "Je rejoins une partie" << endl;
             }
+
             default:
                 cout << "Commande inconnue" << endl;
         }

@@ -39,4 +39,13 @@ Pool *Pools::getNonFullPool() {
     return pool;
 }
 
+Pool *Pools::findByWaitedIp(char *ipAddress) {
+    Pool *pool = nullptr;
 
+    for(std::vector<Pool *>::iterator it = this->pools.begin(); it != this->pools.end(); it++) {
+        if((*it)->isWaitingForIpAddress(ipAddress)) {
+            return pool;
+        }
+    }
+
+}

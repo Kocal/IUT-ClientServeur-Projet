@@ -17,7 +17,7 @@ class Pools {
 public:
 
     Pools(int nbPools = MAX_POOLS, int nbPlayers = MAX_PLAYERS);
-    
+
     Pool *getEmptyPool();
 
     Pool *getNonFullPool();
@@ -29,6 +29,8 @@ public:
     int getNbPlayers() const {
         return nbPlayers;
     }
+
+    Pool *findByWaitedIp(char *string);
 
 private:
 

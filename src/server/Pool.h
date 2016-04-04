@@ -21,10 +21,23 @@ public:
 
     bool isFull();
 
+    bool addPlayer(User *pUser);
+
+    bool isWaitingForIpAddress(const char *ipAddress);
+
+    void shouldWait(const char *ipAddress);
+
+    void initGame(int sideSize, int pionsToAlignCount);
+
 private:
 
     int nbPlayers;
+
+    int sideSize;
+    int pionsToAlignCount;
+
     std::vector<User *> users;
+    std::vector<const char *> waitedIpAddress;
 };
 
 
