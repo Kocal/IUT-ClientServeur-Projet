@@ -2,23 +2,27 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include <iwlib.h>
+#include <pthread.h>
+
 #include "../common/socket.h"
 #include "../common/json/json.h"
-#include "Pools.h"
 #include "../common/protocol.h"
+#include "Pools.h"
 
 using namespace std;
+
+std::map<pid_t, User *> users; // les utilisateurs
+Pools *pools; // les salles de jeu
+
+std::map<std::string, Pool *> waitedIps; // adresses IP attendues
+std::map<std::string, Pool *>::iterator waitedIpsIt;
+
+void *handleUser(void *param);
 
 int main(int argc, char **argv) {
 
     int port; // port du serveur
     int sockfd; // point de connexion
-    Pools *pools; // les salles de jeu
-
-    pid_t pid;
-
-    std::map<std::string, Pool *> waitedIps; // adresses IP attendues
-    std::map<std::string, Pool *>::iterator waitedIpsIt;
 
     // --- Vérification du port
 
@@ -49,75 +53,42 @@ int main(int argc, char **argv) {
     pools = new Pools();
     printf("%d pools de %d joueurs ont étés créés\n", pools->getNbPools(), pools->getNbPlayers());
 
-//    cout << "> Recherche d'une salle vide... ";
-//    Pool *pool = pools->getEmptyPool();
-//
-//    if (pools == nullptr) {
-//        cout << "FAILURE" << endl;
-//        return EXIT_FAILURE; // changer ça
-//    } else {
-//        cout << "OK" << endl;
-//    }
-
     // --- Attente des joueurs
 
     cout << "> Attente d'un client... " << endl;
 
     while (true) {
+        pthread_t threadId;
         int client;
         struct sockaddr_in addr;
         unsigned int addr_size = sizeof(struct sockaddr);
-
 
         if ((client = accept(sockfd, (sockaddr *) &addr, (socklen_t *) &addr_size)) == -1) {
             perror("FAILURE");
             continue;
         }
 
-        pid = fork();
 
-        switch (pid) {
-            case -1: // error
-                perror("> fork()");
-                exit(EXIT_FAILURE);
+        threadId = users.size();
+        users[threadId] = new User();
+        users[threadId]->setSocket(client);
+        users[threadId]->setAddress(addr);
 
-            case 0: // child {
+        printf("> L'utilisateur %p vient de se connecter au serveur\n", users[threadId]);
 
-                User *user = new User();
-                user->setSocket(client);
-                user->setAddress(addr);
-
-                std::string responseBuffer;
-                Json::Value response;
-                Json::Reader reader;
-                Json::FastWriter fastWriter;
-
-                printf("> Nouvelle connexion sur %s:%d\n", user->getIpAddress(), user->getPort());
-
-                waitedIpsIt = waitedIps.find(user->getIpAddress());
-
-                // L'adresse IP n'est pas attendue par un autre joueur
-                if (waitedIpsIt == waitedIps.end()) {
-                    printf("> Le joueur %p (%s) vient de rejoindre une pool vide (%p)\n", user, user->getIpAddress(),
-                           pools->getEmptyPool());
-
-                    response["method"] = PROTOCOL_METHOD_NEW_GAME;
-                } else {
-                    printf("> Le joueur %p (%s) est attendu pour jouer dans une pool (%p)", user, user->getIpAddress(),
-                           waitedIpsIt->second);
-
-                    response["method"] = PROTOCOL_METHOD_JOIN_POOL;
-                    waitedIps.erase(waitedIpsIt);
-                }
-
-                user->send(fastWriter.write(response));
-
-                while (true) {
-                    cout << "Réponse : " << user->recv(100) << endl;
-                    break;
-                }
+        if (pthread_create(&threadId, nullptr, handleUser, nullptr) != 0) {
+            perror("pthread_create");
+            continue;
         }
     }
 
     return EXIT_SUCCESS;
+}
+
+void *handleUser(void *) {
+    User* currentUser = users.at(users.size() - 1);
+
+    printf("> L'utilisateur %p a été affecté dans un nouveau thread\n", currentUser);
+
+    return nullptr;
 }
