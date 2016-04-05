@@ -26,19 +26,6 @@ Pool *Pools::getEmptyPool() {
     return pool;
 }
 
-Pool *Pools::getNonFullPool() {
-    Pool *pool = nullptr;
-
-    for (std::vector<Pool *>::iterator it = this->pools.begin(); it != this->pools.end(); it++) {
-        if (!(*it)->isFull()) {
-            pool = *it;
-            break;
-        }
-    }
-
-    return pool;
-}
-
 Pool *Pools::findByWaitedIp(char *ipAddress) {
     Pool *pool = nullptr;
 

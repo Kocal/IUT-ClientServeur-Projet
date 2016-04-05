@@ -1,14 +1,11 @@
-//
-// Created by kocal on 02/04/16.
-//
-
 #include <iostream>
-#include "Pool.h"
 #include <algorithm>
+#include "Pool.h"
 
 Pool::Pool(int nbPlayers) : nbPlayers(nbPlayers) {
 //    this->users = std::vector<User *>(nbPlayers);
 }
+
 
 int Pool::getCurrentNbPlayers() {
     return this->users.size();
@@ -27,7 +24,7 @@ bool Pool::addPlayer(User *pUser) {
         return false;
     }
 
-//    this->users.push_back(pUser);
+    this->users.push_back(pUser);
     return true;
 }
 
@@ -47,7 +44,6 @@ bool Pool::isWaitingForIpAddress(const char *ipAddress) {
     std::vector<const char *>::iterator it;
 
     for (it = this->waitedIpAddress.begin(); it != this->waitedIpAddress.end(); it++) {
-//        std::cout << "'" << ipAddress << "' : '" << (*it) << "'" << std::endl;
         if (ipAddress == *it) {
             return true;
         }
@@ -59,4 +55,6 @@ bool Pool::isWaitingForIpAddress(const char *ipAddress) {
 void Pool::initGame(int sideSize, int pionsToAlignCount) {
     this->sideSize = sideSize;
     this->pionsToAlignCount = pionsToAlignCount;
+
+    //TODO: Faire des trucs ici
 }

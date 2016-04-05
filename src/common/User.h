@@ -15,35 +15,33 @@ public:
 
     User(int socket = 0);
 
+    /**
+     * Permet de reçevoir n bytes du client
+     */
     std::string recv(unsigned int bytes);
-    void send(std::string string);
 
-    int getSocket() const {
-        return socket;
-    }
+    /**
+     * Permet d'envoyer une requête au client
+     */
+    void send(std::string string);
 
     void setSocket(int socket) {
         this->socket = socket;
     }
 
+    void setAddress(sockaddr_in in);
+
     const sockaddr_in &getAddr() const {
         return addr;
     }
 
-    void setAddress(sockaddr_in in);
-
     char *getIpAddress() {
         return inet_ntoa(this->addr.sin_addr);
-    }
-
-    int getPort() {
-        return this->addr.sin_port;
     }
 
 private:
     int socket;
     sockaddr_in addr;
 };
-
 
 #endif //IUT_CLIENTSERVEUR_MINIPROJET_USER_H

@@ -18,9 +18,15 @@ public:
 
     Pools(int nbPools = MAX_POOLS, int nbPlayers = MAX_PLAYERS);
 
+    /**
+     * Retourne une pool vide
+     */
     Pool *getEmptyPool();
 
-    Pool *getNonFullPool();
+    /**
+     * Retourne la pool où `ipAddress` est attendue
+     */
+    Pool *findByWaitedIp(char *ipAddress);
 
     int getNbPools() const {
         return nbPools;
@@ -30,8 +36,6 @@ public:
         return nbPlayers;
     }
 
-    Pool *findByWaitedIp(char *string);
-
 private:
 
     int nbPools;
@@ -40,7 +44,6 @@ private:
     std::vector<Pool *> pools;
 
     void initPools();
-
 };
 
 #endif
