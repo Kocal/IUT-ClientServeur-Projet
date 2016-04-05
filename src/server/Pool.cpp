@@ -4,21 +4,14 @@
 
 #include <iostream>
 #include "Pool.h"
+#include <algorithm>
 
 Pool::Pool(int nbPlayers) : nbPlayers(nbPlayers) {
-    this->users = std::vector<User *>(nbPlayers);
+//    this->users = std::vector<User *>(nbPlayers);
 }
 
 int Pool::getCurrentNbPlayers() {
-    int _players = 0;
-
-    for (std::vector<User *>::iterator it = this->users.begin(); it != this->users.end(); it++) {
-        if (*it != nullptr) {
-            _players++;
-        }
-    }
-
-    return _players;
+    return this->users.size();
 }
 
 bool Pool::isEmpty() {
@@ -30,29 +23,40 @@ bool Pool::isFull() {
 }
 
 bool Pool::addPlayer(User *pUser) {
-    if(this->isFull()) {
+    if (this->isFull()) {
         return false;
     }
 
-    this->users.push_back(pUser);
+//    this->users.push_back(pUser);
     return true;
-}
-
-bool Pool::isWaitingForIpAddress(const char *ipAddress) {
-    for(std::vector<const char*>::iterator it = this->waitedIpAddress.begin(); it != this->waitedIpAddress.end(); it++) {
-        std::cout << (*it) << std::endl;
-    }
 }
 
 void Pool::shouldWait(const char *ipAddress) {
     this->waitedIpAddress.push_back(ipAddress);
 }
 
+void Pool::shouldNotWait(const char *ipAddress) {
+    auto position = std::find(this->waitedIpAddress.begin(), this->waitedIpAddress.end(), ipAddress);
+
+    if (position != this->waitedIpAddress.end()) {
+        this->waitedIpAddress.erase(position);
+    }
+}
+
+bool Pool::isWaitingForIpAddress(const char *ipAddress) {
+    std::vector<const char *>::iterator it;
+
+    for (it = this->waitedIpAddress.begin(); it != this->waitedIpAddress.end(); it++) {
+//        std::cout << "'" << ipAddress << "' : '" << (*it) << "'" << std::endl;
+        if (ipAddress == *it) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Pool::initGame(int sideSize, int pionsToAlignCount) {
     this->sideSize = sideSize;
     this->pionsToAlignCount = pionsToAlignCount;
-
-
 }
-
-

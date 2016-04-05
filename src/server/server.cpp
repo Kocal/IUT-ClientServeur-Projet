@@ -2,7 +2,6 @@
 #include <iostream>
 #include <arpa/inet.h>
 #include <iwlib.h>
-#include <pthread.h>
 #include <map>
 #include <vector>
 #include <algorithm>
@@ -23,6 +22,8 @@ Pools *pools; // les salles de jeu
 std::vector<std::string> waitedIps;
 
 void *handleUser(void *param);
+
+void _methodNewGame(Json::Value response, Pool* currentPool);
 
 int main(int argc, char **argv) {
 
@@ -85,39 +86,6 @@ int main(int argc, char **argv) {
             continue;
         }
 
-//        printf("> Nouvelle connexion sur %s:%d\n", user->getIpAddress(), user->getPort());
-//
-//        waitedIpsIt = waitedIps.find(user->getIpAddress());
-//
-//        cout << "ADD SIZE : " << waitedIps.size() << endl;
-//
-//        // L'adresse IP n'est pas attendue par un autre joueur
-//        if (waitedIpsIt == waitedIps.end()) {
-//            pool = pools->getEmptyPool();
-//
-//            printf("> Le joueur %p (%s) vient de rejoindre une pool vide (%p)\n", user, user->getIpAddress(),
-//                   pool);
-//
-//            if (pool->addPlayer(user)) {
-////                        response["code"];
-//            } else {
-////                        response["code"];
-//            }
-//
-//            request["method"] = PROTOCOL_METHOD_NEW_GAME;
-//        } else {
-//            pool = pools->findByWaitedIp(user->getIpAddress());
-//
-//            printf("> Le joueur %p (%s) est attendu pour jouer dans une pool (%p)", user, user->getIpAddress(),
-//                   waitedIpsIt->second);
-//
-//            request["method"] = PROTOCOL_METHOD_JOIN_POOL;
-//
-//            waitedIps.erase(waitedIpsIt);
-//        }
-//
-//        user->send(fastWriter.write(request));
-//
 //        while (true) {
 //            if (!reader.parse(user->recv(BUFFER_LENGTH), response)) {
 //                cerr << "> Impossible de parser la réponse du client" << endl;
@@ -153,8 +121,8 @@ int main(int argc, char **argv) {
 }
 
 void *handleUser(void *) {
-    User* currentUser = users.at(users.size() - 1);
-    Pool* currentPool = nullptr;
+    User *currentUser = users.at(users.size() - 1);
+    Pool *currentPool = nullptr;
 
     // Servira pour l'envoi de la requête au client
     std::string requestBuffer;
@@ -177,29 +145,72 @@ void *handleUser(void *) {
 
     // --- On vérifie si oui ou non l'utilisateur est attendu dans une pools
 
-    std::vector<std::string>::iterator position = std::find(waitedIps.begin(), waitedIps.end(), currentUserIpAddress);
+    auto position = std::find(waitedIps.begin(), waitedIps.end(), currentUserIpAddress);
 
     // L'utilisateur n'est pas attendu
-    if(position == waitedIps.end()) {
+    if (position == waitedIps.end()) {
+        method = PROTOCOL_METHOD_NEW_GAME;
         currentPool = pools->getEmptyPool();
-        request["method"] = PROTOCOL_METHOD_NEW_GAME;
+
+        // Toutes les pools sont remplies
+        if(!currentPool) {
+            return nullptr;
+        }
 
         printf("> L'utilisateur %p a rejoint la pool vide %p\n", currentUser, currentPool);
 
-        // hack malicieux temporaire pour tester si l'adresse IP est attendue
-        waitedIps.push_back(currentUser->getIpAddress());
-
     } else { // attendu
+        method = PROTOCOL_METHOD_JOIN_POOL;
         currentPool = pools->findByWaitedIp(currentUserIpAddress);
-        request["method"] = PROTOCOL_METHOD_JOIN_POOL;
 
         printf("> L'utilisateur %p est attendu dans la pool %p\n", currentUser, currentPool);
 
         // On n'attend plus l'user
         waitedIps.erase(position);
+        currentPool->shouldNotWait(currentUserIpAddress);
     }
 
+    request["method"] = method;
     currentUser->send(writer.write(request));
 
+    // --- On lit désormais ce que l'utilisateur envoie
+
+    while (true) {
+        if (!reader.parse(currentUser->recv(BUFFER_LENGTH), response)) {
+            cerr << "> Impossible de parser la réponse du client" << endl;
+            continue;
+        }
+
+        cout << "> Réponse du client : " << response << endl;
+        method = response["method"].asInt();
+
+        switch (method) {
+            case PROTOCOL_METHOD_NEW_GAME:
+                _methodNewGame(response, currentPool);
+                break;
+
+            case PROTOCOL_METHOD_JOIN_POOL:
+                currentPool->addPlayer(currentUser);
+                break;
+
+            case PROTOCOL_METHOD_WANTS_TO_PLAY:
+                break;
+        }
+    }
+
     return nullptr;
+}
+
+void _methodNewGame(Json::Value response, Pool* currentPool) {
+    int pSideSize = response["params"]["sideSize"].asInt();
+    int pPionsCount = response["params"]["pionsCount"].asInt();
+    std::string pIpToWait = response["params"]["ipToWait"].asString();
+
+    cout << "ON ATTEND " << pIpToWait << endl;
+
+    currentPool->initGame(pSideSize, pPionsCount);
+    currentPool->shouldWait(pIpToWait.c_str());
+    waitedIps.push_back(pIpToWait);
+
+    printf("> Création d'une partie [%d, %d]\n", pSideSize, pPionsCount);
 }

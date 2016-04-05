@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
         Json::Value response;
         Json::Value request;
         Json::Reader reader;
-        Json::FastWriter fastWriter;
+        Json::FastWriter writer;
 
         bzero(&responseBuffer, BUFFER_LENGTH);
         read(socket, &responseBuffer, BUFFER_LENGTH);
@@ -58,7 +58,6 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        cout << "Réponse : " << responseBuffer << endl;
         cout << "Réponse (JSON) : " << response << endl;
 
         method = response.get("method", PROTOCOL_NO_METHOD).asInt();
@@ -87,20 +86,25 @@ int main(int argc, char **argv) {
                 request["params"]["sideSize"] = paramSideSize;
                 request["params"]["ipToWait"] = paramIpToWait;
 
-                write(socket, fastWriter.write(request).c_str(), BUFFER_LENGTH);
+                write(socket, writer.write(request).c_str(), BUFFER_LENGTH);
 
                 break;
             }
 
             case PROTOCOL_METHOD_JOIN_POOL: {
-                cout << "Je rejoins une partie" << endl;
+                cout << "> Vous êtes attendu dans une partie" << endl;
+
+                request["method"] = PROTOCOL_METHOD_JOIN_POOL;
+
+                write(socket, writer.write(request).c_str(), BUFFER_LENGTH);
+
+                break;
             }
 
             default:
                 cout << "Commande inconnue" << endl;
         }
-
-
     }
+
     return EXIT_SUCCESS;
 }

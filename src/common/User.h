@@ -12,8 +12,8 @@
 class User {
 
 public:
-    User(int socket = 0);
 
+    User(int socket = 0);
 
     std::string recv(unsigned int bytes);
     void send(std::string string);
