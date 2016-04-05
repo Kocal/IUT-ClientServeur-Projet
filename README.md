@@ -4,14 +4,14 @@
 
 ## Compilation
 ```bash
-$ make # compile le serveur et le client
-$ make server # compile uniquement le serveur
-$ make client # compile uniquement le client
-$ make clean # clean le projet
+$ cmake
+$ make # compile du serveur et client
+$ make server.bin # compile le serveur
+$ make client.bin # compile le client
 ```
 
 ## Éxecution
 ```bash
-$ ./build/server # lance le serveur
-$ ./build/client # lance le client
+$ ./bin/server.bin # lance le serveur
+$ ./bin/client.bin # lance le client
 ```
